@@ -1,0 +1,13 @@
+models:
+  - name: dim_users
+    columns:
+      - name: masked_user_id
+        tests: [unique, not_null]
+
+  - name: fct_channel_performance
+    columns:
+      - name: channels
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['Direct', 'Organic Search', 'Paid Search', 'Paid Social', 'Email', 'Referral', '(not set)', 'Unassigned']
