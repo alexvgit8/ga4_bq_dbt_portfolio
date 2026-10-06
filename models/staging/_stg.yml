@@ -1,0 +1,37 @@
+version: 2
+
+sources:
+  - name: backend
+    database: bigquery-sb-294315
+    schema: ga4_bq_dbt_portfolio
+    tables:
+      - name: raw_backend_users
+        description: backend data generated from GA4 raw source.
+
+  - name: ga4
+    database: bigquery-public-data
+    schema: ga4_obfuscated_sample_ecommerce
+    tables:
+      - name: ga_events
+        identifier: events_*
+        description: public GA4 dataset provided by Google
+
+models:
+  - name: stg_ga4__events
+    description: Staging model at event grain, built on top of the public GA4 sample dataset.
+    columns:
+      - name: masked_user_id
+        description: Hashed user_pseudo_id.
+        tests:
+          - not_null
+      - name: ga_session_id
+        tests:
+          - not_null
+
+  - name: stg_backend
+    description: Staging model at user level.
+    columns:
+      - name: masked_user_id
+        tests:
+          - unique
+          - not_null
